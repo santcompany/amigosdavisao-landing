@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ótica Amigos da Visão — Campo Grande</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #C0392B;
+  --red-dark: #96291E;
+  --red-glow: rgba(192,57,43,0.35);
+  --black: #0A0A0A;
+  --charcoal: #161616;
+  --card-bg: #111111;
+  --border: rgba(255,255,255,0.07);
+  --mid: #666;
+  --cream: #F8F5F0;
+  --white: #fff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden;}
+
+/* ── CURSOR ── */
+.cursor{position:fixed;width:10px;height:10px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s;mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(192,57,43,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease;}
+.cursor.hover{width:20px;height:20px;}
+.cursor-ring.hover{width:56px;height:56px;border-color:var(--red);}
+
+/* ── NOISE OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;height:72px;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 52px;background:rgba(10,10,10,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-brand{display:flex;align-items:center;gap:13px;text-decoration:none;}
+.logo-icon{width:40px;height:40px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;}
+.logo-icon::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 30%,rgba(255,255,255,0.15) 0%,transparent 60%);}
+.nav-brand-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#fff;line-height:1;}
+.nav-brand-sub{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);}
+.nav-right{display:flex;align-items:center;gap:32px;}
+.nav-link{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);text-decoration:none;transition:color .2s;}
+.nav-link:hover{color:#fff;}
+.nav-btn{background:var(--red);color:#fff;padding:10px 22px;border-radius:2px;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-weight:500;transition:background .2s;}
+.nav-btn:hover{background:var(--red-dark);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:72px 52px 0;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;width:800px;height:800px;background:radial-gradient(circle,rgba(192,57,43,0.12) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:pulse 4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.1);}}
+.hero-tag{font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--red);margin-bottom:24px;display:flex;align-items:center;gap:12px;justify-content:center;opacity:0;animation:fadeUp .7s .1s ease forwards;}
+.hero-tag::before,.hero-tag::after{content:'';width:24px;height:1px;background:var(--red);}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(56px,7vw,96px);font-weight:600;line-height:0.95;margin-bottom:28px;opacity:0;animation:fadeUp .7s .2s ease forwards;}
+.hero-title em{font-style:italic;color:var(--red);}
+.hero-title .line2{display:block;font-size:clamp(40px,5vw,68px);color:rgba(255,255,255,0.35);}
+.hero-desc{font-size:17px;line-height:1.7;color:rgba(255,255,255,0.45);max-width:520px;margin:0 auto 48px;opacity:0;animation:fadeUp .7s .3s ease forwards;}
+.hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp .7s .4s ease forwards;}
+.btn-red{background:var(--red);color:#fff;padding:16px 36px;border-radius:2px;font-size:12px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-weight:600;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-red:hover{background:var(--red-dark);transform:translateY(-2px);}
+.btn-ghost{background:transparent;color:rgba(255,255,255,0.6);padding:16px 36px;border-radius:2px;font-size:12px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-weight:500;border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.4);color:#fff;}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp .7s .8s ease forwards;}
+.hero-scroll span{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,rgba(255,255,255,0.2),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+@keyframes scrollPulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── MARQUEE ── */
+.marquee-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--charcoal);padding:16px 0;}
+.marquee-track{display:flex;gap:0;animation:marquee 20s linear infinite;width:max-content;}
+.marquee-item{display:flex;align-items:center;gap:20px;padding:0 32px;white-space:nowrap;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.3);}
+.marquee-item .dot{width:4px;height:4px;background:var(--red);border-radius:50%;flex-shrink:0;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ── DIFERENCIAIS INTERATIVOS ── */
+.section{padding:120px 52px;position:relative;z-index:1;}
+.sec-eyebrow{font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--red);margin-bottom:16px;text-align:center;}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4vw,56px);font-weight:600;text-align:center;margin-bottom:64px;line-height:1.1;}
+.sec-title em{font-style:italic;color:var(--red);}
+
+/* CARDS INTERATIVOS */
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:1200px;margin:0 auto;}
+.diff-card{background:var(--card-bg);border:1px solid var(--border);padding:52px 40px;cursor:pointer;position:relative;overflow:hidden;transition:border-color .3s,transform .3s;}
+.diff-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(192,57,43,0.08) 0%,transparent 60%);opacity:0;transition:opacity .3s;}
+.diff-card:hover::before{opacity:1;}
+.diff-card:hover{border-color:rgba(192,57,43,0.3);transform:translateY(-4px);}
+.diff-num{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:700;color:rgba(192,57,43,0.1);line-height:1;margin-bottom:20px;transition:color .3s;}
+.diff-card:hover .diff-num{color:rgba(192,57,43,0.25);}
+.diff-icon{width:48px;height:48px;background:rgba(192,57,43,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:background .3s;}
+.diff-card:hover .diff-icon{background:rgba(192,57,43,0.2);}
+.diff-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin-bottom:12px;color:#fff;}
+.diff-desc{font-size:14px;line-height:1.7;color:rgba(255,255,255,0.4);}
+.diff-arrow{position:absolute;bottom:32px;right:32px;width:36px;height:36px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);transition:all .3s;}
+.diff-card:hover .diff-arrow{border-color:var(--red);color:var(--red);transform:rotate(45deg);}
+
+/* ── STATS ANIMADOS ── */
+.stats-section{background:var(--charcoal);padding:80px 52px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;max-width:1000px;margin:0 auto;}
+.stat-card{padding:40px 32px;text-align:center;border:1px solid var(--border);}
+.stat-number{font-family:'Cormorant Garamond',serif;font-size:60px;font-weight:700;color:#fff;line-height:1;display:block;}
+.stat-number span{color:var(--red);}
+.stat-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:8px;display:block;}
+
+/* ── QUIZ ── */
+.quiz-section{background:var(--black);padding:120px 52px;}
+.quiz-wrap{max-width:800px;margin:0 auto;}
+.quiz-intro{text-align:center;margin-bottom:64px;}
+.quiz-progress{display:flex;gap:8px;margin-bottom:48px;justify-content:center;}
+.prog-step{height:3px;flex:1;max-width:80px;background:rgba(255,255,255,0.08);border-radius:2px;transition:background .4s;}
+.prog-step.done{background:var(--red);}
+.prog-step.active{background:rgba(192,57,43,0.5);}
+.quiz-card{background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:52px;position:relative;overflow:hidden;}
+.quiz-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),transparent);}
+.quiz-step{display:none;}
+.quiz-step.active{display:block;animation:fadeUp .4s ease;}
+.quiz-step-label{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.quiz-question{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,3vw,36px);font-weight:600;margin-bottom:8px;line-height:1.2;}
+.quiz-sub{font-size:14px;color:rgba(255,255,255,0.35);margin-bottom:40px;}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.quiz-options.single{grid-template-columns:1fr;}
+.quiz-opt{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:2px;padding:20px 24px;cursor:pointer;transition:all .2s;text-align:left;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.6);font-size:14px;display:flex;align-items:center;gap:14px;}
+.quiz-opt:hover{border-color:rgba(192,57,43,0.4);color:#fff;background:rgba(192,57,43,0.05);}
+.quiz-opt.selected{border-color:var(--red);color:#fff;background:rgba(192,57,43,0.1);}
+.quiz-opt-icon{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
+.quiz-opt-text{display:flex;flex-direction:column;gap:3px;}
+.quiz-opt-label{font-weight:500;color:inherit;}
+.quiz-opt-desc{font-size:11px;color:rgba(255,255,255,0.3);}
+.quiz-opt.selected .quiz-opt-desc{color:rgba(255,255,255,0.5);}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:36px;}
+.quiz-back{background:none;border:1px solid var(--border);color:rgba(255,255,255,0.35);padding:12px 24px;border-radius:2px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.quiz-back:hover{border-color:rgba(255,255,255,0.3);color:#fff;}
+.quiz-next{background:var(--red);color:#fff;border:none;padding:14px 32px;border-radius:2px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:600;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.quiz-next:hover{background:var(--red-dark);}
+.quiz-next:disabled{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.2);cursor:not-allowed;}
+.quiz-counter{font-size:11px;color:rgba(255,255,255,0.2);letter-spacing:2px;}
+
+/* RESULTADO */
+.quiz-result{display:none;text-align:center;}
+.quiz-result.show{display:block;animation:fadeUp .5s ease;}
+.result-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);padding:10px 20px;border-radius:20px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:24px;}
+.result-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,44px);font-weight:600;margin-bottom:16px;line-height:1.1;}
+.result-desc{font-size:15px;line-height:1.7;color:rgba(255,255,255,0.5);margin-bottom:36px;max-width:540px;margin-left:auto;margin-right:auto;}
+.result-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;}
+.result-tag{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:2px;font-size:11px;letter-spacing:1px;color:rgba(255,255,255,0.5);}
+.result-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.result-restart{background:none;border:1px solid var(--border);color:rgba(255,255,255,0.35);padding:12px 24px;border-radius:2px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.result-restart:hover{border-color:rgba(255,255,255,0.3);color:#fff;}
+
+/* ── DEPOIMENTOS ── */
+.dep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:0 auto;}
+.dep-card{background:var(--card-bg);border:1px solid var(--border);padding:36px;border-radius:2px;transition:border-color .3s,transform .3s;}
+.dep-card:hover{border-color:rgba(192,57,43,0.25);transform:translateY(-3px);}
+.dep-stars{display:flex;gap:4px;margin-bottom:16px;}
+.dep-star{color:var(--red);font-size:14px;}
+.dep-text{font-size:14px;line-height:1.7;color:rgba(255,255,255,0.5);margin-bottom:24px;font-style:italic;}
+.dep-text::before{content:'"';font-family:'Cormorant Garamond',serif;font-size:32px;color:rgba(192,57,43,0.3);line-height:0;vertical-align:-12px;margin-right:4px;}
+.dep-author{display:flex;align-items:center;gap:12px;}
+.dep-avatar{width:36px;height:36px;background:rgba(192,57,43,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--red);}
+.dep-name{font-size:13px;font-weight:500;color:#fff;}
+.dep-role{font-size:11px;color:rgba(255,255,255,0.25);}
+
+/* ── CTA FINAL ── */
+.cta-section{padding:120px 52px;text-align:center;position:relative;overflow:hidden;}
+.cta-glow{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(192,57,43,0.15) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5vw,72px);font-weight:600;line-height:1.0;margin-bottom:20px;position:relative;z-index:1;}
+.cta-title em{font-style:italic;color:var(--red);}
+.cta-sub{font-size:16px;color:rgba(255,255,255,0.4);margin-bottom:48px;position:relative;z-index:1;}
+.cta-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
+
+/* ── FOOTER ── */
+footer{background:var(--charcoal);border-top:1px solid var(--border);padding:52px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.footer-left{display:flex;align-items:center;gap:16px;}
+.footer-copy{font-size:11px;color:rgba(255,255,255,0.2);}
+.footer-mid{display:flex;gap:28px;}
+.footer-link{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);text-decoration:none;transition:color .2s;}
+.footer-link:hover{color:rgba(255,255,255,0.6);}
+.footer-right{font-size:11px;color:rgba(255,255,255,0.2);}
+.footer-right span{color:var(--red);}
+
+/* ── WHATSAPP FLOAT ── */
+.wa-float{position:fixed;bottom:32px;right:32px;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(37,211,102,0.35);text-decoration:none;z-index:999;transition:transform .2s,box-shadow .2s;}
+.wa-float:hover{transform:scale(1.1);box-shadow:0 8px 32px rgba(37,211,102,0.5);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:0 24px;}
+  .nav-right .nav-link{display:none;}
+  .hero{padding:72px 24px 100px;}
+  .section,.quiz-section,.cta-section{padding:80px 24px;}
+  .diff-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .quiz-options{grid-template-columns:1fr;}
+  .dep-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;align-items:flex-start;padding:40px 24px;}
+  .cursor,.cursor-ring{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR CUSTOMIZADO -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- WHATSAPP -->
+<a class="wa-float" href="https://wa.me/5567992887176" target="_blank">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.558 4.12 1.529 5.847L0 24l6.302-1.507A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.805 9.805 0 01-5.032-1.386l-.36-.214-3.733.893.938-3.63-.235-.374A9.789 9.789 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+</a>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="logo-icon">
+      <svg width="26" height="17" viewBox="0 0 200 128" fill="none">
+        <rect x="4" y="18" width="80" height="68" rx="34" stroke="white" stroke-width="14" fill="none"/>
+        <rect x="116" y="18" width="80" height="68" rx="34" stroke="white" stroke-width="14" fill="none"/>
+        <line x1="84" y1="52" x2="116" y2="52" stroke="white" stroke-width="14" stroke-linecap="round"/>
+        <line x1="4" y1="52" x2="0" y2="46" stroke="white" stroke-width="11" stroke-linecap="round"/>
+        <line x1="196" y1="52" x2="200" y2="46" stroke="white" stroke-width="11" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1px;">
+      <span class="nav-brand-name">Amigos da Visão</span>
+      <span class="nav-brand-sub">Ótica · Campo Grande</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="catalogo.html">Catálogo</a>
+    <a class="nav-link" href="#diferenciais">Por que nós?</a>
+    <a class="nav-link" href="#quiz">Quiz</a>
+    <a class="nav-btn" href="https://wa.me/5567992887176" target="_blank">Fale Conosco</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">Ótica Amigos da Visão · Campo Grande</div>
+  <h1 class="hero-title">
+    Encontre o óculos<br>
+    <em>perfeito para você.</em>
+    <span class="line2">Preço justo. Atendimento real.</span>
+  </h1>
+  <p class="hero-desc">Descubra seu estilo, formato de rosto e necessidade visual em menos de 2 minutos. Nossa equipe cuida do resto.</p>
+  <div class="hero-actions">
+    <button class="btn-red" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">
+      Fazer o Quiz Gratuito →
+    </button>
+    <a class="btn-ghost" href="catalogo.html">Ver Catálogo</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>rolar</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee"></div>
+</div>
+
+<!-- DIFERENCIAIS -->
+<section class="section" id="diferenciais">
+  <p class="sec-eyebrow">Por que escolher a gente</p>
+  <h2 class="sec-title">Mais do que uma ótica.<br>Uma <em>experiência.</em></h2>
+  <div class="diff-grid" id="diffGrid">
+    <div class="diff-card" data-i="0">
+      <div class="diff-num">01</div>
+      <div class="diff-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3 class="diff-title">Preço Acessível</h3>
+      <p class="diff-desc">Acreditamos que enxergar bem não deve ser privilégio de poucos. Trabalhamos com os melhores preços da região sem abrir mão da qualidade.</p>
+      <div class="diff-arrow">→</div>
+    </div>
+    <div class="diff-card" data-i="1">
+      <div class="diff-num">02</div>
+      <div class="diff-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+      <h3 class="diff-title">Atendimento Personalizado</h3>
+      <p class="diff-desc">Cada cliente é único. Nossa equipe vai além da venda — orientamos você na escolha certa para seu rosto, estilo de vida e necessidade visual.</p>
+      <div class="diff-arrow">→</div>
+    </div>
+    <div class="diff-card" data-i="2">
+      <div class="diff-num">03</div>
+      <div class="diff-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+      <h3 class="diff-title">Expertise em Visão</h3>
+      <p class="diff-desc">Mais de uma década cuidando da visão dos campo-grandenses. Lentes de precisão, armações de qualidade e orientação especializada.</p>
+      <div class="diff-arrow">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-number"><span id="s1">0</span><span>+</span></span>
+      <span class="stat-label">Clientes satisfeitos</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number"><span id="s2">0</span><span>+</span></span>
+      <span class="stat-label">Modelos em estoque</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number"><span id="s3">0</span><span>anos</span></span>
+      <span class="stat-label">De experiência</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number"><span id="s4">0</span><span>%</span></span>
+      <span class="stat-label">De satisfação</span>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<section class="quiz-section" id="quiz">
+  <div class="quiz-wrap">
+    <div class="quiz-intro">
+      <p class="sec-eyebrow">Quiz de Qualificação</p>
+      <h2 class="sec-title" style="margin-bottom:16px;">Qual óculos é <em>feito para você?</em></h2>
+      <p style="font-size:15px;color:rgba(255,255,255,0.4);max-width:480px;margin:0 auto;">Responda 5 perguntas rápidas e descubra o modelo ideal para o seu rosto, estilo e necessidade visual.</p>
+    </div>
+
+    <!-- PROGRESSO -->
+    <div class="quiz-progress" id="quizProgress">
+      <div class="prog-step active" id="prog0"></div>
+      <div class="prog-step" id="prog1"></div>
+      <div class="prog-step" id="prog2"></div>
+      <div class="prog-step" id="prog3"></div>
+      <div class="prog-step" id="prog4"></div>
+    </div>
+
+    <div class="quiz-card" id="quizCard">
+
+      <!-- STEP 1: Formato do rosto -->
+      <div class="quiz-step active" id="step0">
+        <p class="quiz-step-label">Pergunta 1 de 5</p>
+        <h3 class="quiz-question">Qual é o formato do seu rosto?</h3>
+        <p class="quiz-sub">Isso vai nos ajudar a indicar a armação mais harmoniosa para você.</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="selectOpt(this,'rosto','oval')">
+            <div class="quiz-opt-icon">🥚</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Oval</span><span class="quiz-opt-desc">Testa um pouco mais larga, queixo suave</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'rosto','redondo')">
+            <div class="quiz-opt-icon">🔵</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Redondo</span><span class="quiz-opt-desc">Bochechas cheias, linha suave</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'rosto','quadrado')">
+            <div class="quiz-opt-icon">⬛</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Quadrado</span><span class="quiz-opt-desc">Mandíbula e testa largas e definidas</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'rosto','triangular')">
+            <div class="quiz-opt-icon">🔺</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Triangular</span><span class="quiz-opt-desc">Testa estreita, queixo mais largo</span></div>
+          </button>
+        </div>
+        <div class="quiz-nav">
+          <span class="quiz-counter">1 / 5</span>
+          <button class="quiz-next" id="next0" disabled onclick="nextStep(1)">Próximo →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Estilo de vida -->
+      <div class="quiz-step" id="step1">
+        <p class="quiz-step-label">Pergunta 2 de 5</p>
+        <h3 class="quiz-question">Como você descreveria seu estilo de vida?</h3>
+        <p class="quiz-sub">Seu dia a dia influencia diretamente o melhor modelo para você.</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="selectOpt(this,'estilo','executivo')">
+            <div class="quiz-opt-icon">💼</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Profissional / Executivo</span><span class="quiz-opt-desc">Reuniões, escritório, formalidade</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'estilo','casual')">
+            <div class="quiz-opt-icon">😎</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Casual / Descolado</span><span class="quiz-opt-desc">Conforto e estilo no dia a dia</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'estilo','esportivo')">
+            <div class="quiz-opt-icon">🏃</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Ativo / Esportivo</span><span class="quiz-opt-desc">Movimento, academia, ao ar livre</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'estilo','classico')">
+            <div class="quiz-opt-icon">🎩</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Clássico / Elegante</span><span class="quiz-opt-desc">Sofisticação e atemporalidade</span></div>
+          </button>
+        </div>
+        <div class="quiz-nav">
+          <button class="quiz-back" onclick="prevStep(0)">← Voltar</button>
+          <span class="quiz-counter">2 / 5</span>
+          <button class="quiz-next" id="next1" disabled onclick="nextStep(2)">Próximo →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Principal uso -->
+      <div class="quiz-step" id="step2">
+        <p class="quiz-step-label">Pergunta 3 de 5</p>
+        <h3 class="quiz-question">Qual é o seu principal uso dos óculos?</h3>
+        <p class="quiz-sub">Isso define o tipo de lente mais adequado para você.</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="selectOpt(this,'uso','tela')">
+            <div class="quiz-opt-icon">💻</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Telas (computador e celular)</span><span class="quiz-opt-desc">Muitas horas em frente a dispositivos</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'uso','sol')">
+            <div class="quiz-opt-icon">☀️</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Proteção solar</span><span class="quiz-opt-desc">Uso externo, praia, direção</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'uso','leitura')">
+            <div class="quiz-opt-icon">📖</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Leitura e perto</span><span class="quiz-opt-desc">Livros, documentos, detalhe</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'uso','multi')">
+            <div class="quiz-opt-icon">👁️</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Uso contínuo (longe e perto)</span><span class="quiz-opt-desc">Preciso enxergar bem em todas distâncias</span></div>
+          </button>
+        </div>
+        <div class="quiz-nav">
+          <button class="quiz-back" onclick="prevStep(1)">← Voltar</button>
+          <span class="quiz-counter">3 / 5</span>
+          <button class="quiz-next" id="next2" disabled onclick="nextStep(3)">Próximo →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Orçamento -->
+      <div class="quiz-step" id="step3">
+        <p class="quiz-step-label">Pergunta 4 de 5</p>
+        <h3 class="quiz-question">Qual o seu orçamento aproximado?</h3>
+        <p class="quiz-sub">Temos opções para todos os bolsos sem abrir mão da qualidade.</p>
+        <div class="quiz-options single">
+          <button class="quiz-opt" onclick="selectOpt(this,'orcamento','ate200')">
+            <div class="quiz-opt-icon">💚</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Até R$ 200</span><span class="quiz-opt-desc">Ótima qualidade com custo acessível</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'orcamento','200a400')">
+            <div class="quiz-opt-icon">💛</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">R$ 200 a R$ 400</span><span class="quiz-opt-desc">Equilíbrio entre qualidade e preço</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'orcamento','400mais')">
+            <div class="quiz-opt-icon">🔴</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Acima de R$ 400</span><span class="quiz-opt-desc">Marcas premium e lentes de alta tecnologia</span></div>
+          </button>
+        </div>
+        <div class="quiz-nav">
+          <button class="quiz-back" onclick="prevStep(2)">← Voltar</button>
+          <span class="quiz-counter">4 / 5</span>
+          <button class="quiz-next" id="next3" disabled onclick="nextStep(4)">Próximo →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: Prioridade -->
+      <div class="quiz-step" id="step4">
+        <p class="quiz-step-label">Pergunta 5 de 5</p>
+        <h3 class="quiz-question">O que você mais valoriza no seu óculos?</h3>
+        <p class="quiz-sub">Última pergunta! Prometo que vale a pena. 😄</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="selectOpt(this,'prioridade','conforto')">
+            <div class="quiz-opt-icon">😌</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Conforto</span><span class="quiz-opt-desc">Leveza, encaixe perfeito, uso prolongado</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'prioridade','estilo')">
+            <div class="quiz-opt-icon">✨</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Estilo</span><span class="quiz-opt-desc">Design marcante, tendências</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'prioridade','durabilidade')">
+            <div class="quiz-opt-icon">💪</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Durabilidade</span><span class="quiz-opt-desc">Material resistente e de longa vida</span></div>
+          </button>
+          <button class="quiz-opt" onclick="selectOpt(this,'prioridade','tecnologia')">
+            <div class="quiz-opt-icon">🔬</div>
+            <div class="quiz-opt-text"><span class="quiz-opt-label">Tecnologia da lente</span><span class="quiz-opt-desc">Filtros, multifocal, fotossensível</span></div>
+          </button>
+        </div>
+        <div class="quiz-nav">
+          <button class="quiz-back" onclick="prevStep(3)">← Voltar</button>
+          <span class="quiz-counter">5 / 5</span>
+          <button class="quiz-next" id="next4" disabled onclick="showResult()">Ver meu resultado →</button>
+        </div>
+      </div>
+
+    </div><!-- fim quiz-card -->
+
+    <!-- RESULTADO -->
+    <div class="quiz-result" id="quizResult">
+      <div class="result-badge">✦ Seu perfil visual</div>
+      <h3 class="result-title" id="resultTitle"></h3>
+      <p class="result-desc" id="resultDesc"></p>
+      <div class="result-tags" id="resultTags"></div>
+      <div class="result-actions">
+        <a class="btn-red" id="resultWA" href="#" target="_blank">Falar com especialista →</a>
+        <button class="result-restart" onclick="restartQuiz()">Refazer o quiz</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="section" style="background:var(--charcoal);border-top:1px solid var(--border);">
+  <p class="sec-eyebrow">Quem já escolheu a gente</p>
+  <h2 class="sec-title">O que nossos<br>clientes <em>dizem</em></h2>
+  <div class="dep-grid">
+    <div class="dep-card">
+      <div class="dep-stars">★★★★★</div>
+      <p class="dep-text">Fui indicada por uma amiga e não me arrependo. Atendimento incrível, me ajudaram a escolher a armação certa pro meu rosto e o preço foi muito melhor do que eu esperava.</p>
+      <div class="dep-author"><div class="dep-avatar">A</div><div><p class="dep-name">Ana Paula S.</p><p class="dep-role">Cliente há 3 anos</p></div></div>
+    </div>
+    <div class="dep-card">
+      <div class="dep-stars">★★★★★</div>
+      <p class="dep-text">Comprei óculos de grau e de sol na mesma visita. A equipe foi super paciente, explicou tudo sobre as lentes e ainda saiu dentro do meu orçamento. Recomendo demais!</p>
+      <div class="dep-author"><div class="dep-avatar">R</div><div><p class="dep-name">Ricardo M.</p><p class="dep-role">Cliente há 1 ano</p></div></div>
+    </div>
+    <div class="dep-card">
+      <div class="dep-stars">★★★★★</div>
+      <p class="dep-text">Minha filha usa óculos desde os 6 anos e sempre viemos aqui. Os modelos infantis são lindos e resistentes. Nunca tivemos problema com qualidade.</p>
+      <div class="dep-author"><div class="dep-avatar">M</div><div><p class="dep-name">Mariana T.</p><p class="dep-role">Cliente há 5 anos</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <h2 class="cta-title">Pronto para<br>enxergar melhor <em>hoje?</em></h2>
+  <p class="cta-sub">Venha nos visitar ou fale agora pelo WhatsApp. Atendimento rápido e sem enrolação.</p>
+  <div class="cta-actions">
+    <a class="btn-red" href="https://wa.me/5567992887176" target="_blank">Agendar pelo WhatsApp →</a>
+    <a class="btn-ghost" href="catalogo.html">Ver catálogo completo</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div class="logo-icon">
+      <svg width="22" height="14" viewBox="0 0 200 128" fill="none">
+        <rect x="4" y="18" width="80" height="68" rx="34" stroke="white" stroke-width="16" fill="none"/>
+        <rect x="116" y="18" width="80" height="68" rx="34" stroke="white" stroke-width="16" fill="none"/>
+        <line x1="84" y1="52" x2="116" y2="52" stroke="white" stroke-width="16" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="footer-copy">© 2026 Ótica Amigos da Visão · Campo Grande, MS</span>
+  </div>
+  <div class="footer-mid">
+    <a class="footer-link" href="catalogo.html">Catálogo</a>
+    <a class="footer-link" href="#quiz">Quiz</a>
+    <a class="footer-link" href="https://wa.me/5567992887176" target="_blank">WhatsApp</a>
+    <a class="footer-link" href="https://instagram.com/oticaamigosdavisao" target="_blank">Instagram</a>
+  </div>
+  <span class="footer-right">Desenvolvido por <span>ElevAI</span></span>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  }, 80);
+});
+document.querySelectorAll('button,a,.diff-card,.quiz-opt').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
+  el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+});
+
+// ── DIFF CARDS MOUSE GLOW ──
+document.querySelectorAll('.diff-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    card.style.setProperty('--mx', x + '%');
+    card.style.setProperty('--my', y + '%');
+  });
+});
+
+// ── MARQUEE ──
+const items = ['Óculos de Grau','Óculos de Sol','Armações Infantis','Lentes de Contato','Atendimento Especializado','Preço Acessível','Campo Grande MS'];
+const track = document.getElementById('marquee');
+const doubled = [...items, ...items, ...items, ...items];
+track.innerHTML = doubled.map(i => `<span class="marquee-item"><span class="dot"></span>${i}</span>`).join('');
+
+// ── STATS COUNTER ──
+function animateCount(id, target, suffix = '') {
+  const el = document.getElementById(id);
+  let current = 0;
+  const step = Math.ceil(target / 60);
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = current.toLocaleString('pt-BR');
+    if (current >= target) clearInterval(timer);
+  }, 24);
+}
+const statsObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      animateCount('s1', 2000); animateCount('s2', 100);
+      animateCount('s3', 10); animateCount('s4', 98);
+      statsObs.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+statsObs.observe(document.querySelector('.stats-section'));
+
+// ── QUIZ ──
+const answers = {};
+let currentStep = 0;
+
+function selectOpt(btn, key, val) {
+  btn.closest('.quiz-options').querySelectorAll('.quiz-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[key] = val;
+  const nextBtn = document.getElementById('next' + currentStep);
+  if (nextBtn) nextBtn.disabled = false;
+}
+
+function nextStep(n) {
+  document.getElementById('step' + currentStep).classList.remove('active');
+  document.getElementById('prog' + currentStep).classList.remove('active');
+  document.getElementById('prog' + currentStep).classList.add('done');
+  currentStep = n;
+  document.getElementById('step' + currentStep).classList.add('active');
+  document.getElementById('prog' + currentStep).classList.add('active');
+  document.querySelector('.quiz-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function prevStep(n) {
+  document.getElementById('step' + currentStep).classList.remove('active');
+  document.getElementById('prog' + currentStep).classList.remove('active', 'done');
+  currentStep = n;
+  document.getElementById('step' + currentStep).classList.add('active');
+  document.getElementById('prog' + currentStep).classList.remove('done');
+  document.getElementById('prog' + currentStep).classList.add('active');
+}
+
+function showResult() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('quizProgress').style.display = 'none';
+
+  const r = answers;
+  let title = '', desc = '', tags = [], msg = '';
+
+  // Lógica de recomendação
+  if (r.uso === 'sol') {
+    title = 'Você é do time dos óculos de sol estilosos';
+    desc = `Com rosto ${r.rosto || 'harmonioso'} e estilo ${r.estilo || 'moderno'}, recomendamos armações de sol com proteção UV400. ${r.orcamento === 'ate200' ? 'Temos ótimas opções até R$200 que vão surpreender você.' : r.orcamento === '400mais' ? 'Para o seu orçamento, temos marcas premium com lentes polarizadas de alta tecnologia.' : 'Temos modelos incríveis na sua faixa de preço com lentes polarizadas.'}`;
+    tags = ['Óculos de Sol', 'Proteção UV400', 'Lente Polarizada'];
+    msg = `Olá! Fiz o quiz e me indicou óculos de sol. Tenho rosto ${r.rosto}, estilo ${r.estilo} e orçamento ${r.orcamento}. Podem me ajudar?`;
+  } else if (r.uso === 'tela') {
+    title = 'Seus olhos precisam de proteção digital';
+    desc = `Passando muitas horas em telas, você se beneficia de lentes com filtro de luz azul. Com seu estilo ${r.estilo || 'moderno'} e rosto ${r.rosto || 'oval'}, temos armações que vão combinar perfeitamente com você e proteger sua visão.`;
+    tags = ['Filtro Luz Azul', 'Anti-Reflexo', 'Conforto Visual'];
+    msg = `Olá! Fiz o quiz e preciso de óculos com filtro de luz azul. Rosto ${r.rosto}, estilo ${r.estilo}. Podem me ajudar?`;
+  } else if (r.uso === 'multi') {
+    title = 'Multifocal é a solução ideal para você';
+    desc = `Para quem precisa de visão clara de perto e de longe, as lentes progressivas são a melhor escolha. ${r.orcamento === '400mais' ? 'Com seu orçamento, podemos te oferecer o melhor da tecnologia Zeiss e Hoya.' : 'Trabalhamos com lentes multifocais de excelente qualidade em todas as faixas de preço.'}`;
+    tags = ['Lente Multifocal', 'Progressiva', 'Visão Total'];
+    msg = `Olá! O quiz indicou lentes multifocais para mim. Rosto ${r.rosto}, orçamento ${r.orcamento}. Quero saber mais!`;
+  } else {
+    title = 'Um óculos de grau clássico e estiloso para você';
+    desc = `Para leitura e uso cotidiano, com rosto ${r.rosto || 'oval'} recomendamos ${r.rosto === 'redondo' ? 'armações retangulares ou quadradas que alongam o rosto' : r.rosto === 'quadrado' ? 'armações redondas ou ovais que suavizam os traços' : 'uma ampla variedade de modelos que valorizam seu rosto'}. ${r.prioridade === 'conforto' ? 'Priorizaremos armações leves em acetato ou metal.' : r.prioridade === 'estilo' ? 'Temos os lançamentos mais estilosos da temporada.' : 'Temos a combinação perfeita para você.'}`;
+    tags = ['Óculos de Grau', 'Uso Diário', r.rosto === 'redondo' ? 'Armação Retangular' : r.rosto === 'quadrado' ? 'Armação Redonda' : 'Armação Oval'];
+    msg = `Olá! Fiz o quiz e quero um óculos de grau. Rosto ${r.rosto}, estilo ${r.estilo}, orçamento ${r.orcamento}. Podem me ajudar?`;
+  }
+
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultDesc').textContent = desc;
+  document.getElementById('resultTags').innerHTML = tags.map(t => `<span class="result-tag">${t}</span>`).join('');
+  document.getElementById('resultWA').href = `https://wa.me/5567992887176?text=${encodeURIComponent(msg)}`;
+
+  document.getElementById('quizResult').classList.add('show');
+  document.getElementById('quizResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function restartQuiz() {
+  answers.rosto = answers.estilo = answers.uso = answers.orcamento = answers.prioridade = undefined;
+  currentStep = 0;
+  document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.prog-step').forEach(s => s.classList.remove('active','done'));
+  document.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.quiz-next').forEach(b => b.disabled = true);
+  document.getElementById('step0').classList.add('active');
+  document.getElementById('prog0').classList.add('active');
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('quizProgress').style.display = 'flex';
+  document.getElementById('quizResult').classList.remove('show');
+  document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── SCROLL REVEAL ──
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.diff-card,.dep-card,.stat-card').forEach(el => {
+  el.style.opacity='0'; el.style.transform='translateY(24px)';
+  el.style.transition='opacity .6s ease, transform .6s ease';
+  revealObs.observe(el);
+});
+</script>
+</body>
+</html>
