@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Ótica Amigos da Visão</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #C0392B;
+  --red-dark: #96291E;
+  --green: #27AE60;
+  --yellow: #E6A817;
+  --black: #0A0A0A;
+  --charcoal: #161616;
+  --card: #111;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --mid: #555;
+  --white: #fff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);min-height:100vh;}
+
+/* ── LOGIN ── */
+.login-screen{position:fixed;inset:0;background:var(--black);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px;}
+.login-box{background:var(--charcoal);border:1px solid var(--border);border-radius:4px;padding:52px 48px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:28px;position:relative;overflow:hidden;}
+.login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),transparent);}
+.login-logo{display:flex;align-items:center;gap:12px;}
+.login-logo-icon{width:44px;height:44px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.login-logo-text{display:flex;flex-direction:column;gap:2px;}
+.login-logo-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#fff;}
+.login-logo-sub{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:#fff;line-height:1.1;}
+.login-title span{color:var(--red);font-style:italic;}
+.login-field{display:flex;flex-direction:column;gap:8px;}
+.login-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+.login-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;padding:14px 16px;border-radius:2px;outline:none;transition:border-color .2s;width:100%;}
+.login-input:focus{border-color:rgba(192,57,43,0.5);}
+.login-input::placeholder{color:rgba(255,255,255,0.2);}
+.login-btn{background:var(--red);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:16px;border-radius:2px;font-weight:600;transition:background .2s;width:100%;}
+.login-btn:hover{background:var(--red-dark);}
+.login-error{font-size:12px;color:var(--red);text-align:center;display:none;}
+.login-error.show{display:block;}
+.login-hint{font-size:11px;color:rgba(255,255,255,0.2);text-align:center;}
+.login-hint span{color:rgba(255,255,255,0.4);}
+
+/* ── APP (hidden until login) ── */
+.app{display:none;}
+.app.visible{display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── TOP BAR ── */
+.topbar{position:sticky;top:0;z-index:100;height:64px;background:rgba(10,10,10,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;}
+.topbar-left{display:flex;align-items:center;gap:16px;}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.tb-icon{width:34px;height:34px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.topbar-brand{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:#fff;}
+.topbar-badge{font-size:8px;letter-spacing:3px;text-transform:uppercase;background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.25);color:var(--red);padding:4px 10px;border-radius:20px;}
+.topbar-right{display:flex;align-items:center;gap:16px;}
+.topbar-user{font-size:12px;color:rgba(255,255,255,0.3);}
+.topbar-user strong{color:rgba(255,255,255,0.6);}
+.topbar-logout{background:none;border:1px solid var(--border);color:rgba(255,255,255,0.3);font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;border-radius:2px;cursor:pointer;transition:all .2s;}
+.topbar-logout:hover{border-color:var(--red);color:var(--red);}
+.topbar-site{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:6px;}
+.topbar-site:hover{color:rgba(255,255,255,0.6);}
+
+/* ── LAYOUT ── */
+.admin-layout{display:grid;grid-template-columns:220px 1fr;flex:1;}
+
+/* ── SIDEBAR ── */
+.admin-sidebar{background:var(--charcoal);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;gap:4px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
+.sidebar-section{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.2);padding:16px 12px 8px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:2px;cursor:pointer;transition:all .2s;font-size:13px;color:rgba(255,255,255,0.4);border:none;background:none;font-family:'DM Sans',sans-serif;width:100%;text-align:left;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.8);}
+.nav-item.active{background:rgba(192,57,43,0.1);color:#fff;border-left:2px solid var(--red);padding-left:10px;}
+.nav-item svg{flex-shrink:0;opacity:0.6;}
+.nav-item.active svg{opacity:1;}
+.nav-badge{margin-left:auto;font-size:10px;background:var(--red);color:#fff;padding:2px 8px;border-radius:10px;font-weight:600;}
+
+/* ── MAIN ── */
+.admin-main{padding:36px 40px;overflow-x:hidden;}
+
+/* VIEWS */
+.view{display:none;}
+.view.active{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PAGE TITLES ── */
+.page-header{margin-bottom:36px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.page-title-wrap{display:flex;flex-direction:column;gap:4px;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:#fff;line-height:1;}
+.page-title em{font-style:italic;color:var(--red);}
+.page-sub{font-size:13px;color:rgba(255,255,255,0.3);}
+
+/* ── DASHBOARD CARDS ── */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px;}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:2px;padding:24px;display:flex;flex-direction:column;gap:8px;transition:border-color .2s;}
+.dash-card:hover{border-color:rgba(192,57,43,0.2);}
+.dash-card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;}
+.dash-card-num{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:#fff;line-height:1;}
+.dash-card-label{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:1px;}
+.dash-card-sub{font-size:11px;margin-top:4px;}
+.dash-card-sub.good{color:var(--green);}
+.dash-card-sub.warn{color:var(--yellow);}
+.dash-card-sub.bad{color:var(--red);}
+
+/* RECENT TABLE */
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:2px;overflow:hidden;margin-bottom:24px;}
+.table-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.table-title{font-size:13px;font-weight:500;color:#fff;}
+.table-action{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s;}
+.table-action:hover{color:#fff;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:12px 24px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:14px 24px;font-size:13px;color:rgba(255,255,255,0.6);border-bottom:1px solid rgba(255,255,255,0.04);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.8);}
+.td-name{color:#fff;font-weight:500;}
+.td-cat{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.td-price{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;}
+.td-stock{display:inline-flex;align-items:center;gap:6px;}
+.stock-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.stock-ok{background:var(--green);}
+.stock-low{background:var(--yellow);}
+.stock-out{background:var(--red);}
+.td-actions{display:flex;gap:8px;}
+.btn-icon{background:none;border:1px solid var(--border);color:rgba(255,255,255,0.3);width:30px;height:30px;border-radius:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:13px;}
+.btn-icon:hover{border-color:rgba(255,255,255,0.25);color:#fff;}
+.btn-icon.del:hover{border-color:var(--red);color:var(--red);}
+.btn-icon.edit:hover{border-color:var(--yellow);color:var(--yellow);}
+
+/* ── PRODUCTS VIEW ── */
+.products-toolbar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center;}
+.search-wrap{position:relative;flex:1;max-width:280px;}
+.search-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 14px 10px 38px;border-radius:2px;width:100%;outline:none;transition:border-color .2s;}
+.search-input:focus{border-color:rgba(192,57,43,0.4);}
+.search-input::placeholder{color:rgba(255,255,255,0.2);}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.2);pointer-events:none;}
+.filter-sel{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;font-size:12px;padding:10px 28px 10px 12px;border-radius:2px;cursor:pointer;appearance:none;outline:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;}
+.ml-auto{margin-left:auto;}
+
+/* ── FORM ── */
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:2px;overflow:hidden;}
+.form-card-header{padding:20px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.form-card-title{font-size:14px;font-weight:500;color:#fff;}
+.form-grid{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.form-grid.full{grid-template-columns:1fr;}
+.form-field{display:flex;flex-direction:column;gap:8px;}
+.form-field.span2{grid-column:span 2;}
+.form-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+.form-label .req{color:var(--red);}
+.form-input,.form-select,.form-textarea{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;padding:12px 14px;border-radius:2px;outline:none;transition:border-color .2s;width:100%;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(192,57,43,0.5);}
+.form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,0.2);}
+.form-textarea{resize:vertical;min-height:90px;}
+.form-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.form-select option{background:#1a1a1a;}
+.form-hint{font-size:11px;color:rgba(255,255,255,0.2);}
+.form-footer{padding:20px 28px;border-top:1px solid var(--border);display:flex;gap:12px;justify-content:flex-end;}
+.btn-primary{background:var(--red);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;border-radius:2px;font-weight:600;transition:background .2s;}
+.btn-primary:hover{background:var(--red-dark);}
+.btn-secondary{background:none;border:1px solid var(--border);color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px 24px;border-radius:2px;cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:rgba(255,255,255,0.25);color:#fff;}
+.btn-success{background:var(--green);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;border-radius:2px;font-weight:600;transition:background .2s;}
+.btn-success:hover{background:#219a52;}
+
+/* COLOR PICKER */
+.color-options{display:flex;gap:8px;flex-wrap:wrap;}
+.color-opt{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .2s;}
+.color-opt:hover{transform:scale(1.1);}
+.color-opt.selected{border-color:#fff;}
+
+/* STOCK INDICATOR */
+.stock-bar-wrap{display:flex;align-items:center;gap:10px;}
+.stock-bar{flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+.stock-bar-fill{height:100%;border-radius:2px;transition:width .4s;}
+
+/* TOAST */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--charcoal);border:1px solid var(--border);border-radius:2px;padding:14px 24px;font-size:13px;color:#fff;z-index:9999;transition:transform .3s ease;display:flex;align-items:center;gap:10px;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{border-color:rgba(39,174,96,0.4);}
+.toast.error{border-color:rgba(192,57,43,0.4);}
+.toast-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.toast.success .toast-dot{background:var(--green);}
+.toast.error .toast-dot{background:var(--red);}
+
+/* MODAL CONFIRM */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.confirm-overlay.open{opacity:1;pointer-events:all;}
+.confirm-box{background:var(--charcoal);border:1px solid var(--border);border-radius:4px;padding:36px;max-width:400px;width:100%;transform:translateY(16px);transition:transform .2s;}
+.confirm-overlay.open .confirm-box{transform:translateY(0);}
+.confirm-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#fff;margin-bottom:8px;}
+.confirm-desc{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:28px;}
+.confirm-actions{display:flex;gap:10px;justify-content:flex-end;}
+.btn-danger{background:var(--red);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px 24px;border-radius:2px;font-weight:600;transition:background .2s;}
+.btn-danger:hover{background:var(--red-dark);}
+
+/* ESTOQUE VIEW */
+.estoque-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.estoque-card{background:var(--card);border:1px solid var(--border);border-radius:2px;padding:20px;transition:border-color .2s;}
+.estoque-card:hover{border-color:rgba(255,255,255,0.12);}
+.estoque-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.estoque-name{font-size:14px;font-weight:500;color:#fff;}
+.estoque-brand{font-size:11px;color:rgba(255,255,255,0.25);margin-top:2px;}
+.estoque-qty{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;line-height:1;}
+.estoque-qty.ok{color:var(--green);}
+.estoque-qty.low{color:var(--yellow);}
+.estoque-qty.out{color:var(--red);}
+.estoque-controls{display:flex;align-items:center;gap:8px;margin-top:14px;}
+.qty-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);color:#fff;width:32px;height:32px;border-radius:2px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.qty-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);}
+.qty-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;padding:6px;border-radius:2px;width:56px;text-align:center;outline:none;}
+.qty-input:focus{border-color:rgba(192,57,43,0.5);}
+.qty-save{background:var(--green);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:8px 14px;border-radius:2px;transition:background .2s;margin-left:auto;}
+.qty-save:hover{background:#219a52;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .admin-layout{grid-template-columns:1fr;}
+  .admin-sidebar{display:none;}
+  .admin-main{padding:24px 16px;}
+  .dash-grid{grid-template-columns:1fr 1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-field.span2{grid-column:span 1;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3 class="confirm-title">Confirmar exclusão</h3>
+    <p class="confirm-desc" id="confirmDesc">Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.</p>
+    <div class="confirm-actions">
+      <button class="btn-secondary" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn-danger" id="confirmBtn">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg width="26" height="17" viewBox="0 0 200 128" fill="none">
+          <rect x="4" y="18" width="80" height="68" rx="34" stroke="white" stroke-width="14" fill="none"/>
+          <rect x="116" y="18" width="80" height="68" rx="34" stroke="white" stroke-width="14" fill="none"/>
+          <line x1="84" y1="52" x2="116" y2="52" stroke="white" stroke-width="14" stroke-linecap="round"/>
+          <line x1="4" y1="52" x2="0" y2="46" stroke="white" stroke-width="11" stroke-linecap="round"/>
+          <line x1="196" y1="52" x2="200" y2="46" stroke="white" stroke-width="11" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="login-logo-text">
+        <span class="login-logo-name">Amigos da Visão</span>
+        <span class="login-logo-sub">Painel Admin</span>
+      </div>
+    </div>
+    <div>
+      <h2 class="login-title">Bem-vindo,<br><span>administrador</span></h2>
+    </div>
+    <div class="login-field">
+      <label class="login-label">Usuário</label>
+      <input class="login-input" type="text" id="loginUser" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label class="login-label">Senha</label>
+      <input class="login-input" type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <p class="login-error" id="loginError">Usuário ou senha incorretos.</p>
+    <button class="login-btn" onclick="doLogin()">Entrar no painel →</button>
+    <p class="login-hint">Credenciais de demonstração: <span>admin / otica2026</span></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <a class="topbar-logo" href="#">
+        <div class="tb-icon">
+          <svg width="20" height="13" viewBox="0 0 200 128" fill="none">
+            <rect x="4" y="18" width="80" height="68" rx="34" stroke="white" stroke-width="16" fill="none"/>
+            <rect x="116" y="18" width="80" height="68" rx="34" stroke="white" stroke-width="16" fill="none"/>
+            <line x1="84" y1="52" x2="116" y2="52" stroke="white" stroke-width="16" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="topbar-brand">Amigos da Visão</span>
+      </a>
+      <span class="topbar-badge">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <a class="topbar-site" href="index.html" target="_blank">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Ver site
+      </a>
+      <span class="topbar-user">Olá, <strong>Admin</strong></span>
+      <button class="topbar-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <span class="sidebar-section">Principal</span>
+      <button class="nav-item active" onclick="showView('dashboard',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" onclick="showView('produtos',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+        Produtos
+        <span class="nav-badge" id="totalBadge">12</span>
+      </button>
+      <button class="nav-item" onclick="showView('adicionar',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Adicionar Produto
+      </button>
+      <button class="nav-item" onclick="showView('estoque',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Estoque
+        <span class="nav-badge" id="lowBadge" style="background:var(--yellow);display:none;">0</span>
+      </button>
+      <span class="sidebar-section">Site</span>
+      <a class="nav-item" href="index.html" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Página Principal
+      </a>
+      <a class="nav-item" href="catalogo.html" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Catálogo
+      </a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard">
+        <div class="page-header">
+          <div class="page-title-wrap">
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-sub" id="dashDate"></p>
+          </div>
+        </div>
+
+        <div class="dash-grid" id="dashCards"></div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <span class="table-title">Todos os Produtos</span>
+            <button class="table-action" onclick="showView('produtos', document.querySelector('.nav-item:nth-child(3)'))">Ver todos →</button>
+          </div>
+          <table>
+            <thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="dashTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PRODUTOS -->
+      <div class="view" id="view-produtos">
+        <div class="page-header">
+          <div class="page-title-wrap">
+            <h1 class="page-title">Produtos</h1>
+            <p class="page-sub">Gerencie o catálogo da loja</p>
+          </div>
+          <button class="btn-primary" onclick="showView('adicionar', document.querySelector('.nav-item:nth-child(4)'))">+ Adicionar Produto</button>
+        </div>
+        <div class="products-toolbar">
+          <div class="search-wrap">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="search-input" type="text" placeholder="Buscar produto..." id="prodSearch" oninput="renderProdTable()">
+          </div>
+          <select class="filter-sel" id="prodCatFilter" onchange="renderProdTable()">
+            <option value="">Todas categorias</option>
+            <option value="grau">Óculos de Grau</option>
+            <option value="sol">Óculos de Sol</option>
+            <option value="infantil">Infantil</option>
+            <option value="lentes">Lentes</option>
+          </select>
+          <select class="filter-sel" id="prodStockFilter" onchange="renderProdTable()">
+            <option value="">Todo estoque</option>
+            <option value="ok">Disponível</option>
+            <option value="low">Estoque baixo</option>
+            <option value="out">Esgotado</option>
+          </select>
+        </div>
+        <div class="table-card">
+          <table>
+            <thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Badge</th><th>Ações</th></tr></thead>
+            <tbody id="prodTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ADICIONAR / EDITAR -->
+      <div class="view" id="view-adicionar">
+        <div class="page-header">
+          <div class="page-title-wrap">
+            <h1 class="page-title" id="formTitle">Adicionar <em>Produto</em></h1>
+            <p class="page-sub" id="formSub">Preencha os dados do novo produto</p>
+          </div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-header">
+            <span class="form-card-title" id="formCardTitle">Novo Produto</span>
+            <button class="btn-secondary" onclick="resetForm()">Limpar campos</button>
+          </div>
+          <div class="form-grid">
+            <div class="form-field">
+              <label class="form-label">Nome do produto <span class="req">*</span></label>
+              <input class="form-input" type="text" id="fName" placeholder="Ex: Classic Round">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Marca <span class="req">*</span></label>
+              <input class="form-input" type="text" id="fBrand" placeholder="Ex: Ray-Ban">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Categoria <span class="req">*</span></label>
+              <select class="form-select" id="fCategory">
+                <option value="">Selecionar...</option>
+                <option value="grau">Óculos de Grau</option>
+                <option value="sol">Óculos de Sol</option>
+                <option value="infantil">Infantil</option>
+                <option value="lentes">Lentes de Contato</option>
+                <option value="acessorios">Acessórios</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label">Preço (R$) <span class="req">*</span></label>
+              <input class="form-input" type="number" id="fPrice" placeholder="0" min="0">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Quantidade em estoque <span class="req">*</span></label>
+              <input class="form-input" type="number" id="fStock" placeholder="0" min="0">
+              <span class="form-hint">0 = Esgotado · 1–3 = Estoque baixo · 4+ = Disponível</span>
+            </div>
+            <div class="form-field">
+              <label class="form-label">Badge</label>
+              <select class="form-select" id="fBadge">
+                <option value="">Nenhum</option>
+                <option value="novo">Novo</option>
+                <option value="promo">Promoção</option>
+              </select>
+            </div>
+            <div class="form-field span2">
+              <label class="form-label">Descrição</label>
+              <textarea class="form-textarea" id="fDesc" placeholder="Descreva o produto, materiais, características..."></textarea>
+            </div>
+            <div class="form-field span2">
+              <label class="form-label">Cor do ícone</label>
+              <div class="color-options" id="colorOptions"></div>
+              <span class="form-hint">Cor usada para o ícone do produto no catálogo</span>
+            </div>
+            <div class="form-field span2">
+              <label class="form-label">Especificações (Material, Formato, Garantia...)</label>
+              <div id="specsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
+              <button type="button" onclick="addSpecRow()" style="background:none;border:1px dashed rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);font-family:'DM Sans',sans-serif;font-size:12px;padding:10px;border-radius:2px;cursor:pointer;margin-top:4px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(192,57,43,0.4)';this.style.color='rgba(255,255,255,0.6)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.3)'">+ Adicionar especificação</button>
+            </div>
+          </div>
+          <div class="form-footer">
+            <button class="btn-secondary" onclick="showView('produtos', document.querySelectorAll('.nav-item')[1])">Cancelar</button>
+            <button class="btn-primary" id="saveBtn" onclick="saveProduct()">Salvar Produto</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESTOQUE -->
+      <div class="view" id="view-estoque">
+        <div class="page-header">
+          <div class="page-title-wrap">
+            <h1 class="page-title">Controle de <em>Estoque</em></h1>
+            <p class="page-sub">Atualize as quantidades em tempo real</p>
+          </div>
+        </div>
+        <div class="estoque-grid" id="estoqueGrid"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+let products = JSON.parse(localStorage.getItem('otica_products') || 'null') || [
+  {id:1,name:"Classic Round",brand:"Ray-Ban",category:"grau",price:389,badge:"novo",stock:8,color:"#8B4513",desc:"Armação redonda clássica em acetato de alta qualidade.",specs:{Material:"Acetato",Formato:"Redondo","Peso":"18g","Garantia":"12 meses"}},
+  {id:2,name:"Aviator Gold",brand:"Ray-Ban",category:"sol",price:520,badge:"",stock:5,color:"#B8860B",desc:"O icônico aviador com lentes espelhadas e armação dourada.",specs:{Material:"Metal","Lente":"UV400 Polarizada",Formato:"Aviador","Garantia":"12 meses"}},
+  {id:3,name:"Kids Fun Blue",brand:"Infantil Pro",category:"infantil",price:219,badge:"novo",stock:12,color:"#1565C0",desc:"Armação flexível e resistente para crianças.",specs:{Material:"TR90 Flexível",Formato:"Redondo","Faixa etária":"4–12 anos","Garantia":"6 meses"}},
+  {id:4,name:"Multifocal Premium",brand:"Zeiss",category:"lentes",price:780,badge:"",stock:3,color:"#455A64",desc:"Lentes multifocais digitais de última geração.",specs:{Tipo:"Multifocal Digital","Anti-reflexo":"Sim","Filtro UV":"Sim","Origem":"Alemanha"}},
+  {id:5,name:"Square Titanium",brand:"Oakley",category:"grau",price:450,badge:"",stock:6,color:"#1A1A2E",desc:"Armação quadrada em titanium ultraleve.",specs:{Material:"Titanium",Formato:"Quadrado","Peso":"12g","Garantia":"24 meses"}},
+  {id:6,name:"Cat Eye Rose",brand:"Vogue",category:"sol",price:340,badge:"promo",stock:4,color:"#C9748C",desc:"Armação gatinho em acetato rosé.",specs:{Material:"Acetato","Lente":"UV400",Formato:"Cat Eye","Garantia":"12 meses"}},
+  {id:7,name:"Kids Sport Red",brand:"Infantil Pro",category:"infantil",price:189,badge:"",stock:9,color:"#C0392B",desc:"Armação esportiva para crianças ativas.",specs:{Material:"TR90",Formato:"Esportivo","Faixa etária":"5–14 anos","Garantia":"6 meses"}},
+  {id:8,name:"Blue Light Shield",brand:"Zeiss",category:"lentes",price:420,badge:"novo",stock:15,color:"#1565C0",desc:"Lentes monofocais com filtro de luz azul.",specs:{Tipo:"Monofocal","Filtro luz azul":"99%","Anti-reflexo":"Sim","Origem":"Alemanha"}},
+  {id:9,name:"Wayfarer Classic",brand:"Carrera",category:"sol",price:299,badge:"promo",stock:7,color:"#2C1810",desc:"Estilo wayfarer clássico com lentes polarizadas.",specs:{Material:"Acetato","Lente":"Polarizada UV400",Formato:"Wayfarer","Garantia":"12 meses"}},
+  {id:10,name:"Slim Wire Gold",brand:"Calvin Klein",category:"grau",price:510,badge:"",stock:5,color:"#B8860B",desc:"Armação fio a fio em metal dourado.",specs:{Material:"Metal dourado",Formato:"Oval","Peso":"9g","Garantia":"24 meses"}},
+  {id:11,name:"Kids Flex Pink",brand:"Infantil Pro",category:"infantil",price:229,badge:"novo",stock:11,color:"#E91E8C",desc:"Armação 100% flexível para as menores.",specs:{Material:"TR90 Soft",Formato:"Oval","Faixa etária":"3–10 anos","Garantia":"6 meses"}},
+  {id:12,name:"Transitions Brown",brand:"Transitions",category:"lentes",price:650,badge:"",stock:6,color:"#6D4C41",desc:"Lentes fotossensíveis que escurecem automaticamente.",specs:{Tipo:"Fotossensível","Tecnologia":"Gen 8","Anti-reflexo":"Sim","Garantia":"36 meses"}},
+];
+
+let editingId = null;
+let selectedColor = '#C0392B';
+const COLORS = ['#C0392B','#1565C0','#B8860B','#8B4513','#2C1810','#1A1A2E','#C9748C','#E91E8C','#455A64','#6D4C41','#27AE60','#1C1C1C'];
+const CAT = {grau:'Óculos de Grau',sol:'Óculos de Sol',infantil:'Infantil',lentes:'Lentes de Contato',acessorios:'Acessórios'};
+
+function save() { localStorage.setItem('otica_products', JSON.stringify(products)); }
+
+// ── AUTH ──
+function doLogin() {
+  const u = document.getElementById('loginUser').value;
+  const p = document.getElementById('loginPass').value;
+  if (u === 'admin' && p === 'otica2026') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+    renderAll();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('loginPass').value = '';
+  }
+}
+function doLogout() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').classList.remove('show');
+}
+
+// ── NAVIGATION ──
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'dashboard') renderDash();
+  if (name === 'produtos') renderProdTable();
+  if (name === 'estoque') renderEstoque();
+  if (name === 'adicionar' && !editingId) resetForm();
+}
+
+// ── TOAST ──
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.className = 'toast ' + type;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── CONFIRM ──
+let confirmCb = null;
+function confirm(desc, cb) {
+  document.getElementById('confirmDesc').textContent = desc;
+  document.getElementById('confirmOverlay').classList.add('open');
+  confirmCb = cb;
+  document.getElementById('confirmBtn').onclick = () => { closeConfirm(); cb(); };
+}
+function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('open'); }
+
+// ── DASHBOARD ──
+function renderDash() {
+  const now = new Date();
+  document.getElementById('dashDate').textContent = now.toLocaleDateString('pt-BR', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const total = products.length;
+  const available = products.filter(p => p.stock > 0).length;
+  const low = products.filter(p => p.stock > 0 && p.stock <= 3).length;
+  const out = products.filter(p => p.stock === 0).length;
+  const totalVal = products.reduce((a,p) => a + p.price * p.stock, 0);
+
+  document.getElementById('dashCards').innerHTML = `
+    <div class="dash-card"><div class="dash-card-icon" style="background:rgba(192,57,43,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg></div><span class="dash-card-num">${total}</span><span class="dash-card-label">Total de Produtos</span><span class="dash-card-sub good">↑ Catálogo ativo</span></div>
+    <div class="dash-card"><div class="dash-card-icon" style="background:rgba(39,174,96,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#27AE60" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><span class="dash-card-num">${available}</span><span class="dash-card-label">Disponíveis</span><span class="dash-card-sub good">${((available/total)*100).toFixed(0)}% do catálogo</span></div>
+    <div class="dash-card"><div class="dash-card-icon" style="background:rgba(230,168,23,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E6A817" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span class="dash-card-num">${low}</span><span class="dash-card-label">Estoque Baixo</span><span class="dash-card-sub ${low>0?'warn':'good'}">${low>0?'Atenção necessária':'Tudo ok'}</span></div>
+    <div class="dash-card"><div class="dash-card-icon" style="background:rgba(192,57,43,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><span class="dash-card-num">${out}</span><span class="dash-card-label">Esgotados</span><span class="dash-card-sub ${out>0?'bad':'good'}">${out>0?'Repor estoque':'Perfeito'}</span></div>`;
+
+  document.getElementById('lowBadge').textContent = low + out;
+  document.getElementById('lowBadge').style.display = (low + out) > 0 ? '' : 'none';
+  document.getElementById('totalBadge').textContent = total;
+
+  const tbody = document.getElementById('dashTable');
+  tbody.innerHTML = products.slice(0,6).map(p => productRow(p)).join('');
+}
+
+function productRow(p) {
+  const stockClass = p.stock === 0 ? 'stock-out' : p.stock <= 3 ? 'stock-low' : 'stock-ok';
+  const stockLabel = p.stock === 0 ? 'Esgotado' : p.stock <= 3 ? `Baixo (${p.stock})` : `${p.stock} un.`;
+  const badgeHtml = p.badge ? `<span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;background:${p.badge==='promo'?'rgba(192,57,43,0.15)':'rgba(255,255,255,0.06)'};border:1px solid ${p.badge==='promo'?'rgba(192,57,43,0.3)':'rgba(255,255,255,0.1)'};padding:3px 8px;border-radius:2px;color:${p.badge==='promo'?'#C0392B':'rgba(255,255,255,0.5)'}">${p.badge}</span>` : '<span style="color:rgba(255,255,255,0.15);font-size:12px;">—</span>';
+  return `<tr>
+    <td><span class="td-name">${p.name}</span><br><span style="font-size:11px;color:rgba(255,255,255,0.25);">${p.brand}</span></td>
+    <td><span class="td-cat">${CAT[p.category]||p.category}</span></td>
+    <td><span class="td-price">R$ ${p.price.toLocaleString('pt-BR')}</span></td>
+    <td><span class="td-stock"><span class="stock-dot ${stockClass}"></span>${stockLabel}</span></td>
+    <td>${badgeHtml}</td>
+    <td><div class="td-actions">
+      <button class="btn-icon edit" title="Editar" onclick="editProduct(${p.id})">✏</button>
+      <button class="btn-icon del" title="Excluir" onclick="deleteProduct(${p.id})">✕</button>
+    </div></td>
+  </tr>`;
+}
+
+// ── PRODUCTS TABLE ──
+function renderProdTable() {
+  const q = document.getElementById('prodSearch').value.toLowerCase();
+  const cat = document.getElementById('prodCatFilter').value;
+  const stk = document.getElementById('prodStockFilter').value;
+  const list = products.filter(p => {
+    const mq = !q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q);
+    const mc = !cat || p.category === cat;
+    const ms = !stk || (stk==='ok'?p.stock>3:stk==='low'?(p.stock>0&&p.stock<=3):p.stock===0);
+    return mq && mc && ms;
+  });
+  document.getElementById('prodTable').innerHTML = list.length
+    ? list.map(p => productRow(p)).join('')
+    : '<tr><td colspan="6" style="text-align:center;padding:48px;color:rgba(255,255,255,0.2);">Nenhum produto encontrado</td></tr>';
+}
+
+// ── FORM ──
+function buildColorPicker() {
+  document.getElementById('colorOptions').innerHTML = COLORS.map(c =>
+    `<div class="color-opt ${c===selectedColor?'selected':''}" style="background:${c}" onclick="selectColor('${c}',this)" title="${c}"></div>`
+  ).join('');
+}
+function selectColor(c, el) {
+  selectedColor = c;
+  document.querySelectorAll('.color-opt').forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function addSpecRow(key='', val='') {
+  const cont = document.getElementById('specsContainer');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:8px;align-items:center;';
+  row.innerHTML = `
+    <input class="form-input" type="text" placeholder="Ex: Material" value="${key}" style="flex:1;">
+    <input class="form-input" type="text" placeholder="Ex: Acetato" value="${val}" style="flex:2;">
+    <button type="button" onclick="this.parentElement.remove()" style="background:none;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.3);width:32px;height:36px;border-radius:2px;cursor:pointer;font-size:16px;flex-shrink:0;transition:all .2s;" onmouseover="this.style.borderColor='rgba(192,57,43,0.4)';this.style.color='#C0392B'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.3)'">✕</button>`;
+  cont.appendChild(row);
+}
+function getSpecs() {
+  const rows = document.getElementById('specsContainer').querySelectorAll('div');
+  const specs = {};
+  rows.forEach(r => {
+    const inputs = r.querySelectorAll('input');
+    if (inputs[0].value.trim() && inputs[1].value.trim()) specs[inputs[0].value.trim()] = inputs[1].value.trim();
+  });
+  return specs;
+}
+function resetForm() {
+  editingId = null;
+  selectedColor = '#C0392B';
+  document.getElementById('formTitle').innerHTML = 'Adicionar <em>Produto</em>';
+  document.getElementById('formSub').textContent = 'Preencha os dados do novo produto';
+  document.getElementById('formCardTitle').textContent = 'Novo Produto';
+  document.getElementById('saveBtn').textContent = 'Salvar Produto';
+  ['fName','fBrand','fPrice','fStock','fDesc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fCategory').value = '';
+  document.getElementById('fBadge').value = '';
+  document.getElementById('specsContainer').innerHTML = '';
+  buildColorPicker();
+}
+function editProduct(id) {
+  const p = products.find(x => x.id === id); if (!p) return;
+  editingId = id;
+  selectedColor = p.color || '#C0392B';
+  document.getElementById('formTitle').innerHTML = 'Editar <em>Produto</em>';
+  document.getElementById('formSub').textContent = `Editando: ${p.name}`;
+  document.getElementById('formCardTitle').textContent = `Editando: ${p.name}`;
+  document.getElementById('saveBtn').textContent = 'Atualizar Produto';
+  document.getElementById('fName').value = p.name;
+  document.getElementById('fBrand').value = p.brand;
+  document.getElementById('fCategory').value = p.category;
+  document.getElementById('fPrice').value = p.price;
+  document.getElementById('fStock').value = p.stock;
+  document.getElementById('fBadge').value = p.badge || '';
+  document.getElementById('fDesc').value = p.desc || '';
+  document.getElementById('specsContainer').innerHTML = '';
+  if (p.specs) Object.entries(p.specs).forEach(([k,v]) => addSpecRow(k,v));
+  buildColorPicker();
+  showView('adicionar', document.querySelectorAll('.nav-item')[2]);
+}
+function saveProduct() {
+  const name = document.getElementById('fName').value.trim();
+  const brand = document.getElementById('fBrand').value.trim();
+  const category = document.getElementById('fCategory').value;
+  const price = Number(document.getElementById('fPrice').value);
+  const stock = Number(document.getElementById('fStock').value);
+  if (!name || !brand || !category || !price) { toast('Preencha os campos obrigatórios.', 'error'); return; }
+  const product = {
+    id: editingId || Date.now(),
+    name, brand, category, price, stock,
+    badge: document.getElementById('fBadge').value,
+    desc: document.getElementById('fDesc').value.trim(),
+    color: selectedColor,
+    specs: getSpecs()
+  };
+  if (editingId) {
+    products = products.map(p => p.id === editingId ? product : p);
+    toast(`"${name}" atualizado com sucesso!`);
+  } else {
+    products.push(product);
+    toast(`"${name}" adicionado ao catálogo!`);
+  }
+  save();
+  editingId = null;
+  renderAll();
+  showView('produtos', document.querySelectorAll('.nav-item')[1]);
+}
+function deleteProduct(id) {
+  const p = products.find(x => x.id === id); if (!p) return;
+  confirm(`Tem certeza que deseja excluir "${p.name}"? Esta ação não pode ser desfeita.`, () => {
+    products = products.filter(x => x.id !== id);
+    save(); renderAll();
+    toast(`"${p.name}" removido do catálogo.`, 'error');
+  });
+}
+
+// ── ESTOQUE ──
+function renderEstoque() {
+  document.getElementById('estoqueGrid').innerHTML = products.map(p => {
+    const cls = p.stock === 0 ? 'out' : p.stock <= 3 ? 'low' : 'ok';
+    const pct = Math.min((p.stock / 20) * 100, 100);
+    const barColor = p.stock === 0 ? '#C0392B' : p.stock <= 3 ? '#E6A817' : '#27AE60';
+    return `<div class="estoque-card">
+      <div class="estoque-card-top">
+        <div><p class="estoque-name">${p.name}</p><p class="estoque-brand">${p.brand} · ${CAT[p.category]||p.category}</p></div>
+        <div><span class="estoque-qty ${cls}">${p.stock}</span><p style="font-size:10px;color:rgba(255,255,255,0.2);margin-top:2px;text-align:right;">unid.</p></div>
+      </div>
+      <div class="stock-bar-wrap"><div class="stock-bar"><div class="stock-bar-fill" style="width:${pct}%;background:${barColor};"></div></div></div>
+      <div class="estoque-controls">
+        <button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
+        <input class="qty-input" type="number" value="${p.stock}" min="0" id="qty-${p.id}" onkeydown="if(event.key==='Enter')saveQty(${p.id})">
+        <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
+        <button class="qty-save" onclick="saveQty(${p.id})">Salvar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function changeQty(id, delta) {
+  const input = document.getElementById('qty-' + id);
+  const newVal = Math.max(0, Number(input.value) + delta);
+  input.value = newVal;
+}
+function saveQty(id) {
+  const input = document.getElementById('qty-' + id);
+  const qty = Math.max(0, Number(input.value));
+  products = products.map(p => p.id === id ? {...p, stock: qty} : p);
+  save(); renderEstoque(); renderDash();
+  toast('Estoque atualizado!');
+}
+
+function renderAll() { renderDash(); }
+
+// INIT COLOR PICKER
+buildColorPicker();
+
+// DASHBOARD DATE
+document.getElementById('dashDate').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+</script>
+</body>
+</html>
